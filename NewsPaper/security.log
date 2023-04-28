@@ -1,0 +1,5 @@
+2023-04-26 00:29:22,347 WARNING log Forbidden (CSRF token from the 'X-Csrftoken' HTTP header incorrect.): /news/article/93/delete
+2023-04-26 00:29:24,445 WARNING log Forbidden (CSRF token from the 'X-Csrftoken' HTTP header incorrect.): /news/article/93/delete
+2023-04-26 00:29:25,121 WARNING log Forbidden (CSRF token from the 'X-Csrftoken' HTTP header incorrect.): /news/article/93/delete
+2023-04-26 00:29:34,285 WARNING log Forbidden (CSRF token from the 'X-Csrftoken' HTTP header incorrect.): /news/article/1/delete
+2023-04-26 00:35:19,726 WARNING log Forbidden (CSRF token from the 'X-Csrftoken' HTTP header incorrect.): /news/news/create

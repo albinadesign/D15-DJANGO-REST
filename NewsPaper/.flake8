@@ -1,0 +1,8 @@
+[flake8]
+
+application-import-names = ./news
+import-order-style = google
+
+ignore = F401
+exclude = .git, __pycache__, .manage.py, .news/migrations
+

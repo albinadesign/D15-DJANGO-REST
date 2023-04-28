@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+{% load i18n %}
+<html lang="ru">
+<head>
+   <meta charset="UTF-8">
+   <title>{% trans "New article" %}</title>
+</head>
+<body>
+<h2>{% trans "Hello! News" %} <a href="{{ link }}">{% trans "article" %}</a> {% trans "of your favourite category" %} </h2>
+<p>{{ text }}</p>
+</body>
+</html>

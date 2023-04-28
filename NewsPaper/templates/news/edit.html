@@ -1,0 +1,15 @@
+{% extends 'flatpages/default.html' %}
+{% load i18n %}
+{% block content %}
+<h1>{% trans "Edit article" %}</h1>
+<hr>
+
+
+<form action="" method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="update" />
+</form>
+<br><br><br>
+<a href="{% url 'news' %}">{% trans "Undo" %}</a><br>
+{% endblock content %}

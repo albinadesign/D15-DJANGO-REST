@@ -1,0 +1,61 @@
+<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
+{% extends 'flatpages/default.html' %}
+{% load i18n %}
+{% load custom_filters %}
+
+<!-- Название у нас будет Post -->
+{% block title %}
+{% trans "Post" %}
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим сам пост, идентификатор которого был передан в url -->
+{% block content %}
+<h1>{{ post.title|censor }}</h1>
+    {% trans "Date of publication" %}: {{ post.dateCreation|date:'d M Y' }} <br><br><br>
+    {{ post.text| censor }}
+<br><br><br>
+<a href="{% url 'news' %}">{% trans "Return to all news and articles" %}</a><br>
+{% if perms.news.add_post %}
+{% if post.author == request.user.author %}
+{% if post.categoryType == 'NW' %}
+                   <a href="{% url 'news_edit' post.id %}">{% trans "Edit news" %}</a>
+                   {% elif post.categoryType == 'AR' %}
+                   <a href="{% url 'article_edit' post.id %}">{% trans "Edit article" %}</a>
+                   {% endif %}
+{% endif %}
+{% endif %}
+<br>
+{% if perms.news.add_post %}
+{% if post.author == request.user.author %}
+{% if post.categoryType == 'NW' %}
+                   <a href="{% url 'news_delete' post.id %}">{% trans "Delete news" %}</a>
+                   {% elif post.categoryType == 'AR' %}
+                   <a href="{% url 'article_delete' post.id %}">{% trans "Delete article" %}</a>
+                   {% endif %}
+{% endif %}
+{% endif %}
+{% endblock content %}
+
+
+       <table>
+           <tr>
+               <td>   {% trans "Title" %}   </td>
+               <td>   {% trans "Date of issue" %}   </td>
+               <td>   {% trans "Type" %}   </td>
+               <td>   {% trans "Number" %}   </td>
+               <td>  {% trans "Description" %}   </td>
+           </tr>
+
+
+           {% for post in news %}
+           <tr>
+               <td>{{ post.title|censor }}</td>
+               <td>{{ post.dateCreation|date:'d M Y' }}</td>
+               <td>{{ post.categoryType }}</td>
+               <td>{{ post.pk }}</td>
+               <td>{{ post.text|truncatewords:20|censor }}</td>
+
+           </tr>
+           {% endfor %}
+
+

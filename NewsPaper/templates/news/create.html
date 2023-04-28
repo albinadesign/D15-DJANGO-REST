@@ -1,0 +1,21 @@
+{% extends 'flatpages/default.html' %}
+{% load i18n %}
+
+{% block content %}
+<h1>{% trans "News" %}</h1>
+<hr>
+{% if perms.news.add_post %}
+<form action="" method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="Save" />
+</form>
+<br><br><br>
+<a href="{% url 'news' %}">{% trans "Undo" %}</a><br>
+{% else %}
+{% trans "You have no rights to publish news. Contact the admin" %}
+<br><br><br>
+<a href="{% url 'news' %}">{% trans "Return to all news and articles" %}</a><br>
+{% endif %}
+{% endblock content %}
+

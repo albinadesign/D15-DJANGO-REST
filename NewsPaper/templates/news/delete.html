@@ -1,0 +1,15 @@
+{% extends 'flatpages/default.html' %}
+{% load i18n %}
+{% load custom_filters %}
+
+{% block content %}
+<h1>{% trans "Delete article" %}</h1>
+<hr>
+<form action="" method="post">
+  {% csrf_token %}
+    <p>{% trans "Delete" %} "{{ object.title|censor }}" ?</p>
+  <input type="submit" value="Delete" />
+</form>
+<br><br><br>
+<a href="{% url 'news' %}">{% trans "Undo" %}</a><br>
+{% endblock content %}

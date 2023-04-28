@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+{% load i18n %}
+<html lang="ru">
+<head>
+   <meta charset="UTF-8">
+   <title>{% trans "Error 403" %}</title>
+</head>
+<body>
+   {% trans "It seems you have no rights to enter the page..." %}
+<br><br><br>
+<a href="{% url 'news' %}">{% trans "Return to the list of news and articles" %}</a>
+</body>
+</html>

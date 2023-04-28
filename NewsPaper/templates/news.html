@@ -1,0 +1,146 @@
+<!-- Загружаем теги с переводами, без этой строки ничего не будет работать -->
+
+{% extends 'flatpages/default.html' %}
+{% load i18n %}
+{% load tz %} <!-- не забываем загрузить тег для работы с часовыми поясами -->
+{% load custom_filters %}
+{% load custom_tags %}
+
+{% block title %}
+News
+{% endblock title %}
+
+
+{% block content %}
+
+
+{% get_current_timezone as TIME_ZONE %}
+    <form action="" method="POST">
+        {% csrf_token %}
+        <label for="timezone">Time zone:</label>
+        <select name="timezone">
+            {% for tz in timezones %}
+            <option value="{{ tz }}"{% if tz == TIME_ZONE %} selected{% endif %}>{{ tz }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Set">
+    </form>
+  {{ TIME_ZONE }}
+    {{ current_time|timezone:TIME_ZONE }} <!-- Отображаем время в выбранном часовом поясе  -->
+
+   <h1>{% trans "All news" %}</h1>
+   <h3>{% trans "Today" %}: {% current_time '%d %b %Y' %}</h3>
+   <h3>{% trans "Quantity of news" %}: {{ all_news|length }}</h3>
+<br>
+
+<a href="{% url 'search' %}">{% trans "Search" %}</a><br><br>
+
+{% if user.is_authenticated %}
+Hello, {{ request.user.username }}!<br><br>
+{% endif %}
+
+{% if is_not_subscriber %}
+<p class="text-center"><a href ='{% url "subscribe" category.id %}' class="btn btn-secondary btn-sm">Sighn to the news</a></p>
+{% endif %}
+
+{% if perms.news.add_post %}
+<a href="{% url 'news_create' %}">{% trans "Create news" %}</a><br>
+<a href="{% url 'article_create' %}">{% trans "Create article" %}</a><br>
+{% endif %}
+
+{% if user.is_authenticated %}
+<a href="{% url 'logout' %}">{% trans "Log out" %}</a><br><br><br>
+{% else %}
+<a href="{% url 'login' %}">{% trans "Log in/Register" %}</a><br><br><br>
+{% endif %}
+
+
+
+
+
+       <table>
+           <tr>
+               <td>   {% trans "Title" %}   </td>
+               <td>   {% trans "Date of issue" %}   </td>
+               <td>   {% trans "Author" %}   </td>
+               <td>   {% trans "Type" %}   </td>
+               <td>   {% trans "Number" %}   </td>
+               <td>   {% trans "Category" %}   </td>
+               <td>  {% trans "Description" %}   </td>
+           </tr>
+
+
+           {% for post in news %}
+           {% for category in post.postCategory.all %}
+
+           <tr>
+               <td>{{ post.title|censor }}</td>
+               <td>{{ post.dateCreation|date:'d M Y' }}</td>
+               <td>{{ post.author }}</td>
+               <td>{{ post.categoryType }}</td>
+               <td>{{ post.pk }}</td>
+               <td>
+                   <a href = "{% url 'category_list' category.id %}">{{ category.name }}<a>
+               </td>
+               <td>{{ post.text|truncatewords:20|censor }}</td>
+               <td><a href='{% url 'post_detail' post.id %}'>{% trans "Read" %}</a></td>
+               <td>
+
+                   {% if perms.news.change_post %}
+                   {% if post.author == request.user.author %}
+                   {% if post.categoryType == 'NW' %}
+                   <a href="{% url 'news_edit' post.id %}">{% trans "Edit news" %}</a>
+                   {% elif post.categoryType == 'AR' %}
+                   <a href="{% url 'article_edit' post.id %}">{% trans "Edit article" %}</a>
+                   {% endif %}
+                   {% endif %}
+                   {% endif %}
+
+               </td>
+               <td>
+
+                   {% if 'news.delete_post' in perms %}
+                   {% if post.author == request.user.author %}
+                   {% if post.categoryType == 'NW' %}
+                   <a href="{% url 'news_delete' post.id %}">{% trans "Delete news" %}</a>
+                   {% elif post.categoryType == 'AR' %}
+                   <a href="{% url 'article_delete' post.id %}">{% trans "Delete article" %}</a>
+                   {% endif %}
+                   {% endif %}
+                   {% endif %}
+
+
+               </td>
+           </tr>
+
+           {% endfor %}
+           {% endfor %}
+
+       </table>
+
+<br>
+
+  {# Добавляем пагинацию на страницу #}
+   {# Информация о предыдущих страницах #}
+   {% if page_obj.has_previous %}
+       <a href="?{% url_replace page=1 %}">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {# Информация о текущей странице #}
+   {{ page_obj.number }}
+
+   {# Информация о следующих страницах #}
+   {% if page_obj.has_next %}
+       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+<br><br><br>
+
+{% endblock content %}
